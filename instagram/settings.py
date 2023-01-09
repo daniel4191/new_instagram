@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,12 +33,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # installed_apps
+    'django_extensions',
+    'debug_toolbar',
 
     # local apps
     'blog1',
@@ -51,6 +58,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # added
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'instagram.urls'
@@ -122,8 +132,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# 작업예정
+# STATIC__ROOT = ''
+
+# MEDIA things
+
+# 파일의 url을 통해서 접근할때의 경로
+MEDIA_URL = '/media/'
+
+# 이것을 해줌으로 인해서 저장되는 파일에 대해서 해당되는 파일은 여기로 저장된다.
+# '여기'라 함은, BASE_DIR의 위치는 manage.py와 동일 선상을 의미하고 보통은(설정에 따라 다를 수 있음)
+# BASE_DIR 위치에 'media'라는 이름의 폴더를 만들어서 그 안에 파일을 저장한다.
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# 이런식의 경로 설정도 가능하다.
+# MEDIA_ROOT = os.path.join(BASE_DIR,'..', 'public', 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
