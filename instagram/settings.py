@@ -44,10 +44,12 @@ INSTALLED_APPS = [
     # installed_apps
     'django_extensions',
     'debug_toolbar',
+    'bootstrap5',
 
     # local apps
     'blog1',
-    'gram'
+    'gram',
+    'accounts'
 ]
 
 MIDDLEWARE = [
@@ -69,6 +71,14 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            # 기본적으로 BASE_DIR을 하게 되면 manage.py 파일이 있는 선상부터 시작하는 것이다.
+            # 만약에 'templates'라면, manage.py와 동등선상에 있는 templates라는 이름의 폴더를
+            # 찾아서 이동한 후에 자료 서치를 시작하는 것이다.
+
+            # 내가 알기론 이게 3.x버전의 표현으로 알고 있다.
+            # os.path.join(BASE_DIR / 'templates')
+
+            # 이게 4.x버전대의 표현으로 알고있다.
             BASE_DIR / 'templates'
         ],
         'APP_DIRS': True,

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 # 이거는 권장되는 방법은 아니다. 이유는, User 모델은 가변적 요소이기 때문이다.
 # 혹여 사용하기를 원한다면 프로젝트 단위의 settings.py의 맨 밑에 AUTH_USER_MODEL = '<앱단위이름>.User'
 # 이렇게 등록해준다.
@@ -27,6 +28,14 @@ class Post(models.Model):
     # 즉, if 조건에 따라서 경로를 달리해줄수도 있는거다.
     photo = models.ImageField(blank=True, upload_to='gram/post/%Y%m%d')
 
+    # 기본적인 사용방법. 하지만 Tag라고 넣어놓으면 Tag를 참조하기위하여
+    # 동일한 models.py에 정의해둔 Tag를 위에 올려주거나 (나의 경우에)
+    # Tag를 문자열로 지정해준다. 'Tag' 이렇게
+
+    # blank = True를 해준 이유는 Tag가 없는 상황도 있을 수 있기 때문에
+    # blank를 True로 해준것이다. null = True와 같다. 다만 쓰이는 대상이 다른 것 같다.
+    tag_set = models.ManyToManyField('Tag', blank=True)
+
     # 이것도 관리자 화면에서 활용이 가능하다. verbose_name으로 설정되는 값은
     # 관리자 화면에서의 카테고리 명, 관리자 화면을 통한 데이터 생성 혹은 수정시의 이름으로 활용된다.
     is_public = models.BooleanField(default=False, verbose_name='공개여부')
@@ -37,6 +46,15 @@ class Post(models.Model):
     def __str__(self):
         # return f'Post object ({self.id})'
         return self.message
+
+    def get_absolute_url(self):
+        # 이게 무슨 의미냐면 우선 나오는
+        # 1. gram:은 :뒤의 함수정의분이 어디에 있는지 알려주는 app_name
+        # 2. post_detail은 gram이라는 앱에 정의되어있는 함수로 반환되는 url 경로
+        # 3. args 는 #2에서 리턴되는 실제값은 /instagram/ 이런식으로 된다. 그리고 그 뒤에 붙는 값이다.
+        # 여기서는 self.id로 쓰였으므로 /instagram/<int:id>/와 같은 역할을 한다.
+        # 그리고 이거는 url Resolve? 를 대신하여 html에 사용된다.
+        return reverse('gram:post_detail', args=[self.id])
 
     class Meta:
         ordering = ['-id']
@@ -49,7 +67,7 @@ class Post(models.Model):
     # 00(정의함수).short_description = 'admin페이지에서 보고싶은 카테고리 명'
     # 이어서 이건 "카테고리 명"을 정의하는 것이고, 해당 카테고리에 딸려있는 content에 대한
     # 글씨 정의는 admin.py에서 진행한다.
-    message_length.short_description = '메세지 글자수'
+    # message_length.short_description = '메세지 글자수'
 
 
 class Comment(models.Model):
@@ -69,3 +87,12 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # 업데이트 되는 순간 순간마다 (auto_now)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    # Tag 클래스에서 이걸 써주던지, Post 클래스에서 tag_set을 써주면 된다.
+    # post_set = models.ManyToManyField(Post)
+
+    def __str__(self):
+        return self.name

@@ -1,0 +1,10 @@
+<h2>latest</h2>
+
+{{ latest }}
+
+<h2>Date list</h2>
+
+{% for date in date_list %}
+    <!-- Y 즉, year에 대한 필터 값 -->
+    {{ date|date:"Y" }}
+{% endfor %}

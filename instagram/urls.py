@@ -15,14 +15,35 @@ Including another URLconf
 """
 
 from django.conf.urls.static import static
+from django.views.generic import TemplateView, RedirectView
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 
+
+# CBV 사용 두번째 방법과 함께 사용하기 위해 생성한 클래스다.
+class RootView(TemplateView):
+    template_name = 'root.html'
+
+
 urlpatterns = [
+    # CBV 사용 첫번째 방법
+    # templates를 루트에 등록해주고 그냥 root.html로 해보니깐 나오질 않더라.
+    # path('', TemplateView.as_view(template_name='instagram/root.html'), name='root'),
+
+    # CBV 사용 두번째 방법 - class 정의와 함께 사용한다.
+    # path('', RootView.as_view(), name='root'),
+
+    # URL Reverse방식 첫번째
+    # path('', RedirectView.as_view(url='/instagram/'), name='root'),
+
+    # URL Reverse방식 두번째 - Django 공식문서상에서는 이 방식이 선호된다.
+    # <앱이름>:<앱단위의 urls.py에서 지정해준 name을 사용>
+    path('', RedirectView.as_view(pattern_name='gram:post_list'), name='root'),
     path('admin/', admin.site.urls),
     path('blog1/', include('blog1.urls')),
-    path('instagram/', include('gram.urls'))
+    path('instagram/', include('gram.urls')),
+    path('accounts/', include('accounts.urls')),
 ]
 
 # 실질적으로는 DEBUG가 False, 즉 이미 서비스가 배포된 경우에는 static이 빈 리스트로 나온다고해서
