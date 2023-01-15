@@ -27,7 +27,10 @@ SECRET_KEY = 'django-insecure-)4v5x&7k66m9=c#2lz)*wn@69p^l-g=wureg-ff-w2y7x56x8-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '56ee-183-99-193-152.jp.ngrok.io'
+]
 
 
 # Application definition
@@ -141,11 +144,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
-# 작업예정
-# STATIC__ROOT = ''
+# 탬플릿 태그 {% static '경로' %}에 의해서 참조되는 설정
+STATIC_URL = '/static/'
 
-# MEDIA things
+# file system loader에 의해서 참조되는 설정
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR / 'static')
+]
+
+# STATIC 폴더가 앱단위, 프로젝트단위 등으로 흩어져있을때 한군데에 모아주는 경로
+# 이것을 설정해 준 후에, 터미널로 "python manage.py collectstatic"이라고 입력해주면 작동된다.
+# (개발시에는 의미가 없고, 배포시에만 의미가 있음)
+STATIC__ROOT = os.path.join(BASE_DIR / 'staticfiles')
 
 # 파일의 url을 통해서 접근할때의 경로
 MEDIA_URL = '/media/'

@@ -6,6 +6,11 @@
 {% endblock title %}
 
 {% block content %}
+    <script>
+        if ( 1 > 0 ) {
+            console.log('hello');
+        }
+    </script>
     <form action="" method="get">
         <!-- name은 여기서 자체적으로 지정해준것이며, value의 q는 gram의 views에서 전달받아 온 것이다.-->
         <input type="text" name="q" value="{{ q }}">
