@@ -1,0 +1,12 @@
+<!-- 파일도 전송할 경우에는 반드시 enctype="multipart/form-data"를 해줘야 한다. -->
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- form을 써줄때는 반드시 table로 감싸줘야 생김새가 깨져보이지 않고 정돈되어 나온다. -->
+    <!-- 두번째 방법으로는 form.as_table을 해주면 된다. -->
+    <table>
+        {{ form }}
+    </table>
+    <!-- 여기를 통해서 전달받게 되는 데이터는 request.POST의 형식으로 전달이 된다. 따라서 이것과 관련된
+    로직을 구현해야하며, 추가로 파일저장이 있을 경우에는 request.FILES도 추가적으로 정의해주어야 한다. -->
+    <input type="submit" value="저장">
+</form>

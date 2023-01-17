@@ -11,13 +11,16 @@
 {% if post.photo %}
     <div>
         <!-- 만약 사진까지 직접적으로 보여주고 싶다고 한다면 .url까지 붙여줘야한다. -->
-        <img src="{{ post.photo.url }}">
+        <img src="{{ post.photo.url }}" style="width: 400px; height: 400px">
     </div>
 {% endif %}
-{{ post.message }}
+{{ post.message|linebreaks }}
 <hr>
 <!-- 겉보기는 a태그지만, 실질적인 기능은 button이기 때문에 class로 버튼에 css 먹이듯이 해도 먹는다. -->
 <a href="{% url 'gram:post_list' %}" class="btn btn-success">
     목록
+</a>
+<a href="{% url 'gram:post_edit' post.pk %}" class="btn btn-info">
+    수정
 </a>
 {% endblock content %}

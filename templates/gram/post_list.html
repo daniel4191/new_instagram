@@ -17,6 +17,10 @@
         <input type="submit" value="검색">
     </form>
 
+    <!-- test start-->
+    <a href="{% url 'gram:post_new' %}" class="btn btn-success btn-block mt-3 mb-3">새 포스팅</a>
+    <!-- test end-->
+
     <table class="table table-bordered table-hover">
         <tbody>
             {% for post in post_list %}

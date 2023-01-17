@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -8,6 +8,7 @@ from django.views.generic.dates import ArchiveIndexView, YearArchiveView
 
 
 from .models import Post
+from .forms import PostForm
 
 # Create your views here.
 
@@ -50,7 +51,7 @@ post_list = PostListView.as_view()
 
 # response 방법1
 '''
-def post_detail(request, pk):    
+def post_detail(request, pk):
     response = HttpResponse()
     response.write('hello, world')
     return response
@@ -118,3 +119,70 @@ post_archive = ArchiveIndexView.as_view(
 
 post_archive_year = YearArchiveView.as_view(
     model=Post, date_field='created_at', make_object_list=True)
+
+
+@login_required
+def post_new(request):
+    # 만약 html의 input등을 통해서 데이터를 전달받기를 원한다면 정의해주어야 함.
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            # commit이 True여야 "model instance"가 호출이 된다고 한다.
+            # 구체적으로는 잘 모르겠다.
+            # 하지만 만약에 commit 값이 False면 실제 데이터베이스에 save가 안된다고 한다.
+            # 또 하지만 commit을 False로 하더라도 post = form.save(commit=False)
+            # 바로 다음 인자가 post.save()면 저장된다고 한다.
+            # post = form.save(commit=True)
+
+            post = form.save()
+            # ***매우중요****
+            # 여기서 redirect로 post를 받았다.
+            # post는 위에서 여러가지 과정을 거쳐서 "유효하고" "저장된" form을 post = form.save()로 처리해주었다.
+            # form은 위에서 PostForm으로 진행을 했으며
+            # PostForm은 forms.py에서 Post model을 상속받았다.
+            # Post model을 models.py에서 보게 되면
+            # get_absolute_url이 설정되어있고
+            # 그 get_absolute_url은 post_detail페이지로 이동되게끔 (여기서는) 설정되었으니
+            # 그렇게 이동이 된다.
+            return redirect(post)
+    else:
+        form = PostForm()
+
+    return render(request, 'gram/post_form.html', {
+        'form': form,
+    })
+
+
+# 이 데코레이터 하나만으로 로그인되어있다는 전제가 분명해진다.
+# 로그인을 안하면 접근이 안된다.
+@login_required
+def post_edit(request, pk):
+    # pk 인자에 해당하는 인스턴스 (인스턴스는 쉽게 객체의 실체화 라고 생각하면 된다.)
+    post = get_object_or_404(Post, pk=pk)
+
+    # 작성자 check Tip
+    if post.author != request.user:
+        messages.error(request, '작성자만 수정할 수 있습니다.')
+        return redirect(post)
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        # forms.py설명의 연장선상이다 (Integrity Error관련)
+        # 유효한 정보들이 들어가야하고
+        if form.is_valid():
+            # 여기서 바로 세이브 해주게 되면 노출되어야하는 필드와 일치하지 않으니 에러가 날것이다.
+            # post = form.save()
+            # 그걸 위해서 commit = False를 우선해주고
+            post = form.save(commit=False)
+            # 필수 필드를 여기서 처리해준다.(이 경우에는 author)
+            # 현재 로그인된 User 인스턴스 즉, 반드시 로그인이 되어있다는 전제가 되어야한다.
+            post.author = request.user
+            post.save()
+            return redirect(post)
+
+    else:
+        form = PostForm(instance=post)
+
+    return render(request, 'gram/post_form.html', {
+        'form': form,
+    })

@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+# 이거는 MinLengthValidator(3)이라고 할 경우에 글씨가 3개 미만일 경우 ValidationError를 리턴한다.
+# 즉, 최소 요구 길이를 의미한다.
+from django.core.validators import MinLengthValidator
 # 이거는 권장되는 방법은 아니다. 이유는, User 모델은 가변적 요소이기 때문이다.
 # 혹여 사용하기를 원한다면 프로젝트 단위의 settings.py의 맨 밑에 AUTH_USER_MODEL = '<앱단위이름>.User'
 # 이렇게 등록해준다.
@@ -12,7 +15,9 @@ from django.urls import reverse
 class Post(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    message = models.TextField()
+    message = models.TextField(
+        validators=[MinLengthValidator(10)]
+    )
     # ImageField를 사용하려면 pip install pillow를 해줘야한다.
     # black=True의 의미는 해당 필드를 '옵션 필드'즉, 할수도 있고 안할수도있고 사용자 마음대로 한다는 뜻
 

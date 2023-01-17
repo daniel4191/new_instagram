@@ -15,6 +15,7 @@ register_converter(MonthConverter, 'month')
 register_converter(DayConverter, 'day')
 
 urlpatterns = [
+    path('new/', views.post_new, name='post_new'),
     # name에 지정 되는 값들은 URL Reverse를 수행할 사실상 "pattern_name"에 지정해주는 것이다.
     # pattern_name의 기본 값은 None이다.
     # URL Reverse는 html 파일에서 {% url 'gram:post_detail' post.pk %} 이런식으로 쓰이는 걸 말한다.
@@ -22,6 +23,7 @@ urlpatterns = [
     # 이처럼 <int:pk>라는 식으로 사용하는 것을 "converter" 라고 부른다.
     # 더 정확히는 여기서는 int를 컨버터, 뒤의 pk는 views로 부터 전달받은 converter의 인자라고 보면 된다.
     path('<int:pk>/', views.post_detail, name='post_detail'),
+    path('<int:pk>/edit/', views.post_edit, name='post_edit'),
     # 여기의 <>인자에서 먼저오는 year이 가능한 이유는 register_converter를 통해서
     # YearConverter를 year로 알리아스 처리해주었기 때문이다.
 
