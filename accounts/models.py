@@ -5,7 +5,8 @@ from django.db import models
 
 
 class Profile(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    # 여기를 ForeignKey로 설정하게 되면 AttributeError가 발생한다.
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE)
     address = models.CharField(max_length=100)
-    zipcode = models.CharField(max_length=6)
+    zipcode = models.CharField(max_length=6)  # validators = []

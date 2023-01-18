@@ -23,8 +23,6 @@
         
     </form>
     <hr>
-    <!-- NoReverseMatch에러의 요소였어서, 각 인자에 post를 추가해 주었고 이건 주석처리 해준다. -->
-    <!--  {% if form.instance %} -->
     {% if post %}
         <a href="{{ post.get_absolute_url }}" class="btn btn-success">
             내용으로
