@@ -24,6 +24,7 @@ urlpatterns = [
     # 더 정확히는 여기서는 int를 컨버터, 뒤의 pk는 views로 부터 전달받은 converter의 인자라고 보면 된다.
     path('<int:pk>/', views.post_detail, name='post_detail'),
     path('<int:pk>/edit/', views.post_edit, name='post_edit'),
+    path('<int:pk>/delete/', views.post_delete, name='post_delete'),
     # 여기의 <>인자에서 먼저오는 year이 가능한 이유는 register_converter를 통해서
     # YearConverter를 year로 알리아스 처리해주었기 때문이다.
 

@@ -1,4 +1,4 @@
-{% load static %}
+{% load bootstrap5 static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -76,11 +76,33 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                {% block content %}    
-                {% endblock content %}
-                <hr>
-                <!-- 카피라이트 표시 -->
-                &copy; Daniel Choi
+
+              <!-- (장고 부트스트랩 버전) 이 메세지로 인해서 경우에 따른 tag를 리턴하고 해당 tag로 인해서 색상을 조정해주는 알림 start -->
+              <!-- 기본 전제조건으로는 최상단에 static과 함께 bootstrap5가 load되어있어야 사용된다. -->
+              {% bootstrap_messages %}
+              <!-- (장고 부트스트랩 버전) 이 메세지로 인해서 경우에 따른 tag를 리턴하고 해당 tag로 인해서 색상을 조정해주는 알림 end -->
+
+              <!-- 모든 "messages"의 재료는 보통 views에서 from django.contrib import messages를 통해 정의된 
+              재료들을 가져와서 정의된 상황에 따라 노출해주는 것이다. -->
+              <!-- (html과 장고 사용 합친 버전) 이 메세지로 인해서 무언가 알림같은 것을 최 상단에 띄워주는 효과 start -->
+              {% comment %} {% if messages %}
+                <div class="messages">
+                  {% for message in messages %}
+                    <!-- 이 클래스로 인해서 뭔가 경고알림같은 구색이 갖춰졌다. -->
+                    <!-- 그리고 message.tags로 인해서 각 메세지의 형태가 달라진다 (info, danger등) -->
+                    <div class="alert alert-{{ message.tags }}">
+                      {{ message.message }}                  
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %} {% endcomment %}
+              <!-- (html과 장고 사용 합친 버전) 이 메세지로 인해서 무언가 알림같은 것을 최 상단에 띄워주는 효과 end -->
+                            
+              {% block content %}    
+              {% endblock content %}
+              <hr>
+              <!-- 카피라이트 표시 -->
+              &copy; Daniel Choi
             </div>
         </div>
     </div>
